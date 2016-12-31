@@ -1,11 +1,13 @@
 extern crate termion;
 
+use termion::init;
 use termion::event::{Key, Event, MouseEvent};
 use termion::input::{TermRead, MouseTerminal};
 use termion::raw::IntoRawMode;
 use std::io::{Write, stdout, stdin};
 
 fn main() {
+    init();
     let stdin = stdin();
     let mut stdout = MouseTerminal::from(stdout().into_raw_mode().unwrap());
 

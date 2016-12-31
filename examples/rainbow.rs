@@ -1,5 +1,6 @@
 extern crate termion;
 
+use termion::init;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
@@ -21,6 +22,7 @@ fn rainbow<W: Write>(stdout: &mut W, blue: u8) {
 }
 
 fn main() {
+    init();
     let stdin = stdin();
     let mut stdout = stdout().into_raw_mode().unwrap();
 

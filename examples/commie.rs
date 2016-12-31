@@ -1,6 +1,6 @@
 extern crate termion;
 
-use termion::{clear, color, cursor};
+use termion::{clear, color, cursor, init};
 
 use std::{time, thread};
 
@@ -26,6 +26,7 @@ const COMMUNISM: &'static str = r#"
 "#;
 
 fn main() {
+    init();
     let mut state = 0;
 
     println!("\n{}{}{}{}{}{}", cursor::Hide, clear::All, cursor::Goto(1, 1), color::Fg(color::Black), color::Bg(color::Red), COMMUNISM);

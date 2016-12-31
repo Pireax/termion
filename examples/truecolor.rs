@@ -1,9 +1,10 @@
 extern crate termion;
 
-use termion::{color, cursor, clear};
+use termion::{color, cursor, clear, init};
 use std::{thread, time};
 
 fn main() {
+    init();
     for r in 0..255 {
         let c = color::Rgb(r, !r, 2 * ((r % 128) as i8 - 64).abs() as u8);
         println!("{}{}{}wow", cursor::Goto(1, 1), color::Bg(c), clear::All);

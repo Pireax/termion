@@ -1,9 +1,11 @@
 extern crate termion;
 
+use termion::init;
 use termion::input::TermRead;
 use std::io::{Write, stdout, stdin};
 
 fn main() {
+    init();
     let stdout = stdout();
     let mut stdout = stdout.lock();
     let stdin = stdin();

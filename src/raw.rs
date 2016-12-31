@@ -29,12 +29,12 @@ use std::ops;
 /// dropped.
 ///
 /// Restoring will entirely bring back the old TTY state.
-#[cfg(target_os = "redox")]
+#[cfg(any(target_os = "redox", target_os = "windows"))]
 pub struct RawTerminal<W: Write> {
     output: W,
 }
 
-#[cfg(target_os = "redox")]
+#[cfg(any(target_os = "redox", target_os = "windows"))]
 impl<W: Write> Drop for RawTerminal<W> {
     fn drop(&mut self) {
         write!(self, csi!("?82l")).unwrap();
@@ -42,16 +42,19 @@ impl<W: Write> Drop for RawTerminal<W> {
 }
 
 #[cfg(not(target_os = "redox"))]
+#[cfg(not(target_os = "windows"))]
 use termios::Termios;
 /// A terminal restorer, which keeps the previous state of the terminal, and restores it, when
 /// dropped.
 #[cfg(not(target_os = "redox"))]
+#[cfg(not(target_os = "windows"))]
 pub struct RawTerminal<W: Write> {
     prev_ios: Termios,
     output: W,
 }
 
 #[cfg(not(target_os = "redox"))]
+#[cfg(not(target_os = "windows"))]
 impl<W: Write> Drop for RawTerminal<W> {
     fn drop(&mut self) {
         use termios::set_terminal_attr;
@@ -99,7 +102,7 @@ pub trait IntoRawMode: Write + Sized {
 }
 
 impl<W: Write> IntoRawMode for W {
-    #[cfg(not(target_os = "redox"))]
+    #[cfg(not(any(target_os = "redox", target_os = "windows")))]
     fn into_raw_mode(self) -> io::Result<RawTerminal<W>> {
         use termios::{cfmakeraw, get_terminal_attr, set_terminal_attr};
 
@@ -124,7 +127,7 @@ impl<W: Write> IntoRawMode for W {
         }
     }
 
-    #[cfg(target_os = "redox")]
+    #[cfg(any(target_os = "redox", target_os = "windows"))]
     fn into_raw_mode(mut self) -> io::Result<RawTerminal<W>> {
         write!(self, csi!("?82h")).map(|_| {
             RawTerminal { output: self }
